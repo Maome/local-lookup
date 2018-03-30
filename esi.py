@@ -1,20 +1,35 @@
 #!/usr/bin/env python3
 from pprint import pprint
 
+import memcache
+
 from bravado.client import SwaggerClient
 import requests
 
 ESI_URL = "http://esi.tech.ccp.is/latest/swagger.json"
 SCARY_ITEMS = [21096, 28646]
+CACHE = memcache.Client([('127.0.0.1', 11211)])
 
-CACHED_IDS = {}
+def cached(function):
+    def wrapper(*args):
+        key = str(args[0])
+        key = key.replace(' ', '')
+        if CACHE.get(key):
+            return CACHE.get(key)
+
+        result = function(*args)
+        CACHE.set(key, result)
+        return result
+    return wrapper
+
 
 def get_client():
     """ Does this need to be instantiated every time? """
     return SwaggerClient.from_url(ESI_URL)
 
+@cached
 def get_character_id(name):
-    print "getting char name"
+    print "getting slow char id"
     result = get_client().Search.get_search(
         search=name,
         categories=['character'],
@@ -24,19 +39,16 @@ def get_character_id(name):
         raise Exception("Character not found")
     return character_ids[0]
 
+@cached
 def get_character(id):
     print "Getting character"
     result = get_client().Character.get_characters_character_id(character_id=id).result()
     return result
 
+@cached
 def get_type_name(type_id):
-    cached = CACHED_IDS.get(type_id)
-    if cached:
-        print "Got fast type name"
-        return cached
     print "Getting slow type name"
     result = get_client().Universe.get_universe_types_type_id(type_id=type_id).result()
-    CACHED_IDS[type_id] = result['name']
     return result['name']
 
 
