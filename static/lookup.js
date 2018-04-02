@@ -1,10 +1,30 @@
-// document.addEventListener('paste', function (e) {
-// 	lookupCharacters()
-// }, false);
+document.addEventListener('paste', handlePaste);
 
-function getCommaSeparatedCharacters() {
+function handlePaste (e) {
+    var clipboardData, pastedData;
+
+    // Stop data actually being pasted into div
+    e.stopPropagation();
+    e.preventDefault();
+
+    // Get pasted data via clipboard API
+    clipboardData = e.clipboardData || window.clipboardData;
+    pastedData = clipboardData.getData('Text');
+
+    // Do whatever with pasteddata
+    goToCharacters(pastedData);
+}
+
+
+function goToCharacters(text) {
+    var characterString = getCommaSeparatedCharacters(text)
+    if(characterString != "") {
+        window.location = "/characters/" + characterString;
+    }
+}
+
+function getCommaSeparatedCharacters(inputText) {
     var characters = ""
-    var inputText = document.getElementById('sendtext').value;
     var lines = inputText.split('\n');
     for(var i = 0;i < lines.length;i++){
         if(lines[i].trim().length > 0) {
@@ -16,44 +36,4 @@ function getCommaSeparatedCharacters() {
         }
     }
     return characters
-}
-
-function updateResults(jsonResponse) {
-    var resultsText = ""
-
-    for(var i = 0;i < jsonResponse.length;i++){
-        killmailInfo = jsonResponse[i]
-        resultsText += killmailInfo['character_name'] + "\n"
-        resultsText += killmailInfo['killmail_time'] + "\n"
-        resultsText += killmailInfo['ship_name'] + "\n"
-        resultsText += killmailInfo['item_discovered'] + "\n"
-        resultsText += "\n"
-    }
-    if(resultsText == "") {
-        resultsText = "Local appears to be safe"
-        console.log(resultsText)
-    }
-    console.log(resultsText)
-    document.getElementById('results').innerHTML = resultsText
-}
-
-function lookupCharacters() {
-    var characterString = getCommaSeparatedCharacters()
-    if(characterString == "") {
-        document.getElementById('results').innerHTML = "Invalid character input..."
-        console.log("oops")
-    }
-
-    document.getElementById('results').innerHTML = "Processing..."
-    console.log("processing")
-
-    var url = "http://127.0.0.1:5000/characters/information/" + characterString
-
-    fetch(url)
-        .then(function(response) {
-            return response.json()
-        })
-        .then(function(jsonResponse) {
-            updateResults(jsonResponse)
-        });
 }
