@@ -1,10 +1,9 @@
-import requests
-
 from flask import Flask, jsonify
 
 from local_lookup import lookup, eve_xml, zkill
 
 app = Flask(__name__, static_url_path='')
+
 
 @app.route("/characters/information/<character_names>")
 def character_information_route(character_names):
@@ -15,9 +14,11 @@ def character_information_route(character_names):
 
     return jsonify(processed_data)
 
+
 @app.route('/lookup')
 def root():
     return app.send_static_file('lookup.html')
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

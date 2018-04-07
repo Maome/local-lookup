@@ -1,12 +1,10 @@
-import requests
-
-from bravado.client import SwaggerClient
 import memcache
 
 MEMCACHE_HOST = '127.0.0.1'
 MEMCACHE_PORT = 11211
 
 CACHE = memcache.Client([(MEMCACHE_HOST, MEMCACHE_PORT)])
+
 
 def cache(time=0):
     """

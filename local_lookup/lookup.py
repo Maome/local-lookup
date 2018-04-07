@@ -1,5 +1,4 @@
 from . import esi
-from . import zkill
 
 """
 Items:
@@ -8,6 +7,7 @@ covert cyno: 28646
 
 """
 
+
 def is_scary_item(item_type_id):
     if item_type_id == 21096:
         return True
@@ -15,12 +15,14 @@ def is_scary_item(item_type_id):
         return True
     return False
 
+
 def get_scary_item_name(item_type_id):
     if item_type_id == 21096:
         return "cyno"
     elif item_type_id == 28646:
         return "covert cyno"
     return ""
+
 
 def process_character_losses(character_id_map, character_losses):
     processed_data = []
@@ -32,6 +34,7 @@ def process_character_losses(character_id_map, character_losses):
                 processed_data.append(process_loss_info(character_id_map, killmail, item_type_id))
                 break
     return processed_data
+
 
 def process_loss_info(character_id_map, killmail, item_type_id):
     processed_loss = {}
