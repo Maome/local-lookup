@@ -1,5 +1,8 @@
+from .cache import cache
+
 import requests
 
+@cache(time=5)
 def get_character_losses(character_id_map):
     #take the keys for the dictionary as a list
     character_ids = list(character_id_map)

@@ -3,6 +3,7 @@
 Requires:
 Flask
 requests
+python-memcached
 
 How to Run:
 python app.py
