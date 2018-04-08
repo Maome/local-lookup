@@ -3,10 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { Character } from './character';
+import { environment } from '../environments/environment';
 
 @Injectable()
 export class LookupService {
-  private baseBackendUrl = 'http://127.0.0.1:5000/';
+  private baseBackendUrl = environment.apiUrl;
   constructor(private http: HttpClient) { }
 
   getCharacters(): Observable<Character[]> {
